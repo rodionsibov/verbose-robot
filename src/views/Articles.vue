@@ -67,7 +67,10 @@ const showModal = (event: Event): void => {
                         :href="`#${index}`"
                         :class="{ active: index == currentSection }"
                     >{{ header }}</a>
-                    <button class="w-fit bg-slate-700 text-white hover:shadow-lg duration-200 hover:shadow-blue-300 mt-4 ml-4" @click="showModal($event)">Show modal</button>
+                    <button
+                        class="w-fit bg-slate-700 text-white hover:shadow-lg duration-200 hover:shadow-blue-300 mt-4 ml-4"
+                        @click="showModal($event)"
+                    >Show modal</button>
                 </div>
             </aside>
 

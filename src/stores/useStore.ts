@@ -56,7 +56,7 @@ export const useStore = defineStore("main", {
         const res = await fetch(url);
         const data = await res.json();
         this.users = data;
-      } catch (error) {}
+      } catch (error) { }
     },
     async getPosts(userId: number) {
       try {
@@ -64,7 +64,7 @@ export const useStore = defineStore("main", {
         const res = await fetch(url);
         const data = await res.json();
         this.users = data;
-      } catch (error) {}
+      } catch (error) { }
     },
     showTooltip(msg: string) {
       console.log("Message: ", msg);
