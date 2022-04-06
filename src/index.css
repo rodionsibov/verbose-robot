@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  button {
+    @apply font-medium px-3 py-2 text-slate-700 rounded border;
+  }
+}
