@@ -52,18 +52,22 @@ export const useStore = defineStore("main", {
   actions: {
     async getUsers() {
       try {
+        this.isSubmitting = true
         const url = `${apiUrl}/users`;
         const res = await fetch(url);
         const data = await res.json();
         this.users = data;
+        this.isSubmitting = false
       } catch (error) { }
     },
     async getPosts(userId: number) {
       try {
+        this.isSubmitting = true
         const url = `${apiUrl}/posts?userId=${userId}`;
         const res = await fetch(url);
         const data = await res.json();
         this.users = data;
+        this.isSubmitting = false
       } catch (error) { }
     },
     showTooltip(msg: string) {

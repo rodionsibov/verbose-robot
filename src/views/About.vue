@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div>about page</div>
+    <div class="mt-20 p-8 text-2xl font-bold">about page</div>
 </template>
 
 <style scoped>
