@@ -11,12 +11,12 @@ const route = useRoute();
 const store = useStore();
 
 const {
-    users: User,
-    posts: Post,
+    users,
+    posts,
     currentUser,
     isSubmitting,
 } = storeToRefs(store);
-const { getUsers } = store;
+const { getUsers, getPosts, editUser } = store;
 
 watch(
     store,
@@ -27,14 +27,31 @@ watch(
     { deep: true }
 );
 
+const headers = [
+    'id',
+    'name',
+    'phone',
+    'username',
+    'email',
+    'website',
+    'suite',
+    'city',
+    'street',
+    'zipcode',
+    'company name',
+    'company catchphrase',
+    ''
+]
+
 onMounted(() => {
     getUsers();
 });
+
 </script>
 
 <template>
     <div
-        class="code-preview h-screen bg-gradient-to-r bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-2 sm:p-6"
+        class="code-preview min-h-screen bg-gradient-to-r bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-2 sm:p-6"
     >
         <div class="mt-16 mb-5">
             <h1 class="text-3xl text-center text-white">Users & Posts</h1>
@@ -65,31 +82,34 @@ onMounted(() => {
             </div>
         </div>
 
-        <div class="relative shadow-md overflow-x-auto">
+        <div class="relative overflow-x-auto">
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead
                     class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
                 >
                     <tr>
-                        <th scope="col" class="px-6 py-3">Product name</th>
-                        <th scope="col" class="px-6 py-3">Color</th>
-                        <th scope="col" class="px-6 py-3">Category</th>
-                        <th scope="col" class="px-6 py-3">Price</th>
-                        <th scope="col" class="px-6 py-3">
-                            <span class="sr-only">Edit</span>
-                        </th>
+                        <th
+                            v-for="header, index in headers"
+                            :key="index"
+                            scope="col"
+                            class="px-6 py-3"
+                        >{{ header }}</th>
+
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
+                        v-for="user, index in users"
+                        :key="index"
+                        @click="getPosts(user.id)"
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
-                        <td class="px-6 py-4">Sliver</td>
-                        <td class="px-6 py-4">Sliver</td>
-                        <td class="px-6 py-4">Laptop</td>
-                        <td class="px-6 py-4">$2999</td>
-                        <td class="px-6 py-4 text-right">
+                        <td v-for="data, index in user" :key="index" class="px-6 py-4 whitespace-nowrap">{{ data }}</td>
+
+                        <td class="px-6 py-4 text-right dark:bg-gray-800 sticky right-0 left-0 w-fit">
                             <a
+                            @click="editUser(user.id)"
                                 href="#"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                             >Edit</a>
@@ -101,24 +121,25 @@ onMounted(() => {
 
         <div class="mt-8 w-fit mx-auto">
             <a
-                class="inline-flex items-center px-5 py-3 text-sm font-medium text-white transition-colors bg-[#171515] border-2 border-[#171515] hover:border-white rounded hover:bg-transparent hover:text-white focus:outline-none focus:ring active:opacity-75"
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
+                href=""
+                rel="noopener nofollow noreferrer"
+                class="flex items-center px-4 py-2 mr-3 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             >
-                GitHub
                 <svg
-                    class="w-5 h-5 ml-2"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
                     aria-hidden="true"
+                    focusable="false"
+                    data-prefix="fab"
+                    data-icon="github"
+                    class="w-4 h-4 mr-2"
+                    role="img"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 496 512"
                 >
                     <path
-                        fill-rule="evenodd"
-                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                        clip-rule="evenodd"
+                        fill="currentColor"
+                        d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"
                     />
-                </svg>
+                </svg> Edit on GitHub
             </a>
         </div>
     </div>

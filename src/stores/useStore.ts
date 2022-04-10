@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 const apiUrl = "https://jsonplaceholder.typicode.com";
 
-export interface User {
+interface User {
   id: number;
   address: Address;
   company: Company;
@@ -13,26 +13,26 @@ export interface User {
   website: string;
 }
 
-export interface Address {
+interface Address {
   suite: string;
   city: string;
   street: string;
   zipcode: string;
 }
 
-export interface Company {
+interface Company {
   name: string;
   catchPhrase: string;
 }
 
-export interface Post {
+interface Post {
   userId: number;
   id: number;
   title: string;
   body: string;
 }
 
-export interface State {
+interface State {
   isSubmitting: boolean;
   currentUser: User | null;
   users: User[];
@@ -48,7 +48,11 @@ export const useStore = defineStore("main", {
     currentUser: null,
     apiUrl,
   }),
-  getters: {},
+  getters: {
+    filteredUsers: (state) => {
+      return (value: any = []) => state.users.filter(user => user.name === value)
+    }
+  },
   actions: {
     async getUsers() {
       try {
@@ -56,22 +60,42 @@ export const useStore = defineStore("main", {
         const url = `${apiUrl}/users`;
         const res = await fetch(url);
         const data = await res.json();
-        this.users = data;
+        this.users = data
+          .map((item: User) => ({
+            id: item.id,
+            suite: item.address.suite,
+            city: item.address.city,
+            street: item.address.street,
+            zipcode: item.address.zipcode,
+            companyName: item.company.name,
+            catchPhrase: item.company.catchPhrase,
+            email: item.email,
+            name: item.name,
+            phone: item.phone,
+            username: item.username,
+            website: item.website,
+          }))
         this.isSubmitting = false
       } catch (error) { }
     },
-    async getPosts(userId: number) {
+    editUser(userId: number) {
+      console.log('edit user', userId);
+
+    },
+    async getPosts(userId: number): Promise<void> {
       try {
         this.isSubmitting = true
         const url = `${apiUrl}/posts?userId=${userId}`;
         const res = await fetch(url);
-        const data = await res.json();
-        this.users = data;
+        const data = await res.json()
+        this.posts = data
+
         this.isSubmitting = false
       } catch (error) { }
     },
     showTooltip(msg: string) {
       console.log("Message: ", msg);
     },
+
   },
 });

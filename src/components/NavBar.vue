@@ -3,11 +3,11 @@
 const routes = [
     {
         path: '/',
-        name: 'Home',
+        name: 'Articles',
     },
     {
-        path: '/articles',
-        name: 'Articles',
+        path: '/users&posts',
+        name: 'Users&Posts',
     },
     {
         path: '/about',
